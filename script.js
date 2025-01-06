@@ -7,16 +7,19 @@ const showTotRec = document.getElementById('totRec');
 const showTotDep = document.getElementById('totDep');
 const btnAdd = document.getElementById('add');
 
+
 let recettes = 0;
 let depenses = 0;
 let solde = 0;
+let rang = 0;
 
 btnAdd.addEventListener('click',()=>{
     let depense = 0;
     let recette = 0;
     
     if(inputDepense.value || inputRecette.value){
-        newRow = document.createElement('tr');
+        const newRow = document.createElement('tr');
+        newRow.setAttribute('id',`rang${rang}`);
 
         if(inputDepense.value){
             depense = Number(inputDepense.value);
@@ -26,7 +29,7 @@ btnAdd.addEventListener('click',()=>{
             recette = Number(inputRecette.value);
             recettes += recette;
         }
-        newRow.innerHTML = `<td>${inputLabel.value}</td><td>${recette}</td><td>${depense}</td>`;
+        newRow.innerHTML = `<td>${inputLabel.value}</td><td id="rec${rang}">${recette}</td><td id="dep${rang}">${depense}</td><td><button class="supp" id ="${rang}">Supprimer</button></td>`;
         inputLabel.value ='';
         inputDepense.value = '';
         inputRecette.value = '';
@@ -41,5 +44,22 @@ btnAdd.addEventListener('click',()=>{
         }else{
             showSolde.classList.remove('deficit');
         }
+        rang++;
+        const btnSupp = document.querySelectorAll('button.supp');
+        console.log(btnSupp);
+        btnSupp.forEach((btn) => {
+            btn.addEventListener('click',(e)=>{
+                let ligne = e.target.id;
+                const recSup = Number(document.getElementById(`rec${ligne}`).innerHTML);
+                const depSup = Number(document.getElementById(`dep${ligne}`).innerHTML);
+                recettes -= recSup;
+                depenses -= depSup;
+                const rangSup = document.getElementById(`rang${ligne}`)
+                rangSup.remove();
+                showTotRec.innerHTML = recettes;
+                showTotDep.innerHTML = depenses;
+
+            })
+        })
     }
 })
